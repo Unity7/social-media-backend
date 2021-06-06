@@ -19,7 +19,6 @@ const PizzaSchema = new Schema(
       default: "Large",
     },
     toppings: [],
-    //Pizza is the parent, is referencing Comment model as its child
     comments: [
       {
         type: Schema.Types.ObjectId,
@@ -32,14 +31,19 @@ const PizzaSchema = new Schema(
       virtuals: true,
       getters: true,
     },
+    // prevents virtuals from creating duplicate of _id as `id`
     id: false,
   }
 );
 
 // get total count of comments and replies on retrieval
 PizzaSchema.virtual("commentCount").get(function () {
-  return this.comments.length;
+  return this.comments.reduce(
+    (total, comment) => total + comment.replies.length + 1,
+    0
+  );
 });
+
 const Pizza = model("Pizza", PizzaSchema);
 
 module.exports = Pizza;

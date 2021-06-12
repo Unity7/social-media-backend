@@ -1,7 +1,30 @@
 const { Comment, Pizza, Thought, User } = require("../models");
 
 const thoughtController = {
-  // add Thought to pizza
+  // get one thought by id
+  getThoughtById({ params }, res) {
+    Thought.findOne({ _id: params.thoughtId })
+      .then((dbUserData) => {
+        res.json(dbUserData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(400);
+      });
+  },
+
+  // get all Thoughts
+  getAllThought(req, res) {
+    Thought.find({})
+      .sort({ _id: -1 })
+      .then((dbUserData) => res.json(dbUserData))
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(400);
+      });
+  },
+
+  // add Thought to User
   addThought({ params, body }, res) {
     console.log(params);
     Thought.create(body)
@@ -23,11 +46,11 @@ const thoughtController = {
       .catch((err) => res.json(err));
   },
 
-  // add reply to Thought
-  addReply({ params, body }, res) {
+  // add reaction to Thought
+  addReaction({ params, body }, res) {
     Thought.findOneAndUpdate(
       { _id: params.thoughtId },
-      { $push: { replies: body } },
+      { $push: { reactions: body } },
       { new: true, runValidators: true }
     )
       .then((dbUserData) => {
@@ -62,11 +85,11 @@ const thoughtController = {
       })
       .catch((err) => res.json(err));
   },
-  // remove reply
-  removeReply({ params }, res) {
+  // remove reaction
+  removeReaction({ params }, res) {
     Thought.findOneAndUpdate(
       { _id: params.thoughtId },
-      { $pull: { replies: { replyId: params.replyId } } },
+      { $pull: { reaction: { reactionId: params.reactionId } } },
       { new: true }
     )
       .then((dbUserData) => res.json(dbUserData))

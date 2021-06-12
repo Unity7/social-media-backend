@@ -30,16 +30,24 @@ const ReplySchema = new Schema(
   }
 );
 
-const CommentSchema = new Schema(
+const ThoughtSchema = new Schema(
   {
     writtenBy: {
       type: String,
       required: true,
     },
-    commentBody: {
+    thoughtBody: {
       type: String,
       required: true,
+      minLength: 1,
+      maxLength: 280,
     },
+    username: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -57,10 +65,10 @@ const CommentSchema = new Schema(
   }
 );
 
-CommentSchema.virtual("replyCount").get(function () {
+ThoughtSchema.virtual("replyCount").get(function () {
   return this.replies.length;
 });
 
-const Comment = model("Comment", CommentSchema);
+const Thought = model("Thought", ThoughtSchema);
 
-module.exports = Comment;
+module.exports = Thought;

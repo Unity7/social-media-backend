@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/social-media",
+  process.env.MONGODB_URI || "mongodb://localhost/social-media-backend",
   {
     useFindAndModify: false,
     useNewUrlParser: true,
